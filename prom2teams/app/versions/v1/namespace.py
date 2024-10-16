@@ -1,7 +1,7 @@
 import warnings
 
 from flask import request, current_app as app
-from flask_restplus import Resource
+from flask_restx import Resource
 
 from prom2teams.app.sender import AlertSender
 from prom2teams.prometheus.message_schema import MessageSchema
