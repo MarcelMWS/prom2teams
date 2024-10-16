@@ -1,4 +1,4 @@
-FROM python:3.8-alpine AS builder
+FROM python:3.8.20-alpine3.20 AS builder
 WORKDIR /prom2teams
 COPY LICENSE \
         MANIFEST.in \
@@ -8,10 +8,14 @@ COPY LICENSE \
         ./
 COPY prom2teams/ prom2teams
 COPY bin/ bin
+RUN apk add --no-cache gcc musl-dev libffi-dev
+RUN pip install --upgrade pip && \
+    pip install --upgrade setuptools==65.5.1 && \
+    pip install Flask==2.2.5 Werkzeug==2.2.3 uWSGI==2.0.22
 RUN apk add gcc libc-dev yaml-dev linux-headers --no-cache \
         && python setup.py bdist_wheel
 
-FROM python:3.8-alpine
+FROM python:3.8.20-alpine3.20
 LABEL maintainer="labs@idealista.com"
 EXPOSE 8089
 EXPOSE 9090
@@ -19,8 +23,13 @@ WORKDIR /opt/prom2teams
 COPY docker/rootfs .
 COPY --from=builder /prom2teams/dist .
 COPY bin/wsgi.py ./wsgi.py
+RUN apk add --no-cache gcc musl-dev libffi-dev && \
+    pip install --upgrade pip && \
+    pip install --upgrade setuptools==70.0.0 && \
+    pip install Flask==2.2.5 Werkzeug==2.2.3 uWSGI==2.0.22
 RUN apk add gcc libc-dev yaml-dev linux-headers pcre pcre-dev --no-cache \
-	&& pip install prom2teams*.whl
+        && pip install prom2teams*.whl
+RUN apk del gcc musl-dev libffi-dev
 RUN addgroup -g "101" -S prom2teams && \
         adduser -S prom2teams -G prom2teams -u "101" && \
         mkdir -p /var/log/prom2teams && \
