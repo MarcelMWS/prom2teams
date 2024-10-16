@@ -8,7 +8,7 @@ COPY LICENSE \
         ./
 COPY prom2teams/ prom2teams
 COPY bin/ bin
-RUN apk add --no-cache gcc musl-dev libffi-dev
+RUN apk add --no-cache gcc musl-dev libffi-dev pcre-dev
 RUN pip install --upgrade pip && \
     pip install --upgrade setuptools==65.5.1 && \
     pip install Flask==2.2.5 Werkzeug==2.2.3 uWSGI==2.0.22
@@ -23,7 +23,7 @@ WORKDIR /opt/prom2teams
 COPY docker/rootfs .
 COPY --from=builder /prom2teams/dist .
 COPY bin/wsgi.py ./wsgi.py
-RUN apk add --no-cache gcc musl-dev libffi-dev && \
+RUN apk add --no-cache gcc musl-dev libffi-dev pcre-dev && \
     pip install --upgrade pip && \
     pip install --upgrade setuptools==70.0.0 && \
     pip install Flask==2.2.5 Werkzeug==2.2.3 uWSGI==2.0.22
