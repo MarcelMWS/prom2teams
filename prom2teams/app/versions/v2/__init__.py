@@ -28,7 +28,7 @@ def default_error_handler(e):
         return {'message': msg}, 400
     elif isinstance(e, KeyError):
         # For KeyError, set a specific message and return a 400 Bad Request code
-        msg = 'Missing required data.'
+        msg = 'Missing required data or missing Connector.'
         return {'message': msg}, 400
     else:
         # Generic response for other unhandled exceptions
