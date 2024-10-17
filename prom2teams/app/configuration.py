@@ -1,4 +1,5 @@
 import argparse
+from configparser import RawConfigParser
 import configparser
 import logging.config
 
@@ -60,7 +61,7 @@ def _update_application_configuration(application, configuration):
 
 
 def _config_provided(filepath):
-    config = configparser.ConfigParser()
+    config = RawConfigParser()
     try:
         with open(filepath) as f_prov:
             config.read_file(f_prov)
